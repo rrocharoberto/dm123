@@ -10,12 +10,14 @@ dynamodb = boto3.resource('dynamodb')
 table = dynamodb.Table('dm123-images')
 
 def lambda_handler(event, context):
-    # Evento de trigger do S3
+    print("Iniciando processamento da imagem.")
+    # Evento de trigger 'S3 PUT'
     for record in event['Records']:
-        bucket = record['s3']['$S3_BUCKET_NAME']['name'] #replace the bucket name
+        bucket = record['s3']['bucket']['name']
         key = record['s3']['object']['key']
         s3_url = f"s3://{bucket}/{key}"
 
+        print(f"Processando bucket {bucket} objeto {key}")
         try:
             # Baixar imagem
             response = s3.get_object(Bucket=bucket, Key=key)
@@ -44,9 +46,9 @@ def lambda_handler(event, context):
             table.put_item(Item=item)
 
         except Exception as e:
-            print(f"Erro ao processar {key}: {str(e)}")
+            print(f"Erro ao processar {bucket}:{key}: {str(e)}")
             raise
-
+    print("Finalizando processamento da imagem.")
     return {
         'statusCode': 200,
         'body': 'Processamento concluído.'
@@ -56,6 +58,6 @@ def extract_user_id_from_event(event): # obtem os dados da credencial
   try:
     # 'username': o nome de usuário visível no Cognito, se preferir algo mais legível.
     # 'sub': um identificador único do usuário no Cognito.
-    return event['requestContext']['authorizer']['claims']['username']
+    return event['context']['authorizer']['claims']['username']
   except KeyError:
     return "desconhecido"
