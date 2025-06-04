@@ -1,0 +1,3 @@
+{
+  "RedrivePolicy": "{ \"maxReceiveCount\": \"1\", \"deadLetterTargetArn\": \"arn:aws:sqs:us-east-2:$ACCOUNT_ID:dlq-nova-imagem\" }"
+}
