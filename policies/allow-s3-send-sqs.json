@@ -1,0 +1,24 @@
+{
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Sid": "dm123-allowNovaImagem",
+            "Effect": "Allow",
+            "Principal": {
+                "Service": "s3.amazonaws.com"
+            },
+            "Action": [
+                "SQS:SendMessage"
+            ],
+            "Resource": "arn:aws:sqs:us-east-2:679151994355:nova-imagem",
+            "Condition": {
+                "ArnLike": {
+                    "aws:SourceArn": "arn:aws:s3:::dm123-roberto-02"
+                },
+                "StringEquals": {
+                    "aws:SourceAccount": "679151994355"
+                }
+            }
+        }
+    ]
+}
